@@ -1,20 +1,19 @@
 FROM 	debian:9
-USER 	root
+
+#Setup port for Killing floor server 
+EXPOSE 	7777/udp 27015/udp 8080/tcp 20650/udp
 
 #Install all packages | Updates
 RUN 	apt-get update && apt-get upgrade -y
 RUN 	apt-get install lib32gcc1 wget tar vim -y
 
 #Setup install Dir
-RUN 	mkdir /steam
-WORKDIR /steam 
+RUN 	mkdir /home/steam
+WORKDIR /home/steam 
 
-COPY install_kf2_server.script ./kf2.script
 #Getting steamcmd && running steamCMD
-
 RUN 	wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz && \
     	tar -xvzf steamcmd_linux.tar.gz && \
     	rm steamcmd_linux.tar.gz && \
-	chmod +x steamcmd.sh
-
-RUN	./steamcmd.sh +runscript kf2.script
+	chmod +x steamcmd.sh && \
+	./steamcmd.sh +login anonymous +force_install_dir ./kf2_server +app_update 232130 +exit
